@@ -17,6 +17,7 @@
             width: 1136px;
             height: 763px;
             position: relative;
+            overflow: hidden;
         }
         #image {
             width: 100%;
@@ -24,6 +25,7 @@
             position: absolute;
             top: 0;
             left: 0;
+            transform-origin: top left;
         }
         #canvasOverlay {
             position: absolute;
@@ -36,7 +38,7 @@
 </head>
 <body>
     <h1>Vaccine Mapping</h1>
-    <div class="container">
+    <div class="container" id="container">
         <img id="image" src="Complete_Human.png" alt="Human Image">
         <canvas id="canvasOverlay" width="1136" height="763"></canvas>
     </div>
@@ -45,8 +47,10 @@
 
     <script>
         let pins = [];
+        let container = document.getElementById('container');
         let canvas = document.getElementById('canvasOverlay');
         let context = canvas.getContext('2d');
+        let image = document.getElementById('image');
         let scale = 1;
         let originX = 0;
         let originY = 0;
@@ -88,38 +92,39 @@
         });
 
         // Zoom functionality
-        canvas.addEventListener('wheel', function(event) {
+        container.addEventListener('wheel', function(event) {
             event.preventDefault();
             let wheel = event.deltaY < 0 ? 1 : -1;
             let zoom = Math.exp(wheel * 0.1);
             scale *= zoom;
             if (scale < 1) scale = 1; // Prevent zooming out too much
             if (scale > 3) scale = 3; // Prevent zooming in too much
+            container.style.transform = `scale(${scale})`;
             drawPins();
         });
 
         // Touch events for zoom and pan
-        canvas.addEventListener('touchstart', function(event) {
+        container.addEventListener('touchstart', function(event) {
             if (event.touches.length == 2) {
                 // Zooming
                 const dist = Math.sqrt(
                     (event.touches[0].clientX - event.touches[1].clientX) ** 2 +
                     (event.touches[0].clientY - event.touches[1].clientY) ** 2
                 );
-                canvas.setAttribute('data-pinching', dist);
+                container.setAttribute('data-pinching', dist);
             } else {
                 // Panning
                 const touch = event.touches[0];
-                canvas.setAttribute('data-touchX', touch.clientX);
-                canvas.setAttribute('data-touchY', touch.clientY);
+                container.setAttribute('data-touchX', touch.clientX);
+                container.setAttribute('data-touchY', touch.clientY);
             }
         });
 
-        canvas.addEventListener('touchmove', function(event) {
+        container.addEventListener('touchmove', function(event) {
             event.preventDefault();
             if (event.touches.length == 2) {
                 // Zooming
-                const initialDist = parseFloat(canvas.getAttribute('data-pinching'));
+                const initialDist = parseFloat(container.getAttribute('data-pinching'));
                 const currentDist = Math.sqrt(
                     (event.touches[0].clientX - event.touches[1].clientX) ** 2 +
                     (event.touches[0].clientY - event.touches[1].clientY) ** 2
@@ -128,25 +133,27 @@
                 scale *= zoom;
                 if (scale < 1) scale = 1; // Prevent zooming out too much
                 if (scale > 3) scale = 3; // Prevent zooming in too much
+                container.style.transform = `scale(${scale})`;
                 drawPins();
-                canvas.setAttribute('data-pinching', currentDist);
+                container.setAttribute('data-pinching', currentDist);
             } else {
                 // Panning
                 const touch = event.touches[0];
-                const prevX = parseFloat(canvas.getAttribute('data-touchX'));
-                const prevY = parseFloat(canvas.getAttribute('data-touchY'));
+                const prevX = parseFloat(container.getAttribute('data-touchX'));
+                const prevY = parseFloat(container.getAttribute('data-touchY'));
                 originX += (touch.clientX - prevX) / scale;
                 originY += (touch.clientY - prevY) / scale;
+                container.setAttribute('data-touchX', touch.clientX);
+                container.setAttribute('data-touchY', touch.clientY);
+                container.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
                 drawPins();
-                canvas.setAttribute('data-touchX', touch.clientX);
-                canvas.setAttribute('data-touchY', touch.clientY);
             }
         });
 
-        canvas.addEventListener('touchend', function(event) {
-            canvas.removeAttribute('data-pinching');
-            canvas.removeAttribute('data-touchX');
-            canvas.removeAttribute('data-touchY');
+        container.addEventListener('touchend', function(event) {
+            container.removeAttribute('data-pinching');
+            container.removeAttribute('data-touchX');
+            container.removeAttribute('data-touchY');
         });
     </script>
 </body>
