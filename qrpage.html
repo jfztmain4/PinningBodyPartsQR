@@ -19,6 +19,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             let pinData = getQueryParam('data');
+            console.log("Pin Data from URL: ", pinData); // Add this line for debugging
             if (pinData) {
                 QRCode.toCanvas(document.getElementById('qrCode'), decodeURIComponent(pinData), function(error) {
                     if (error) console.error(error);
