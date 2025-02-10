@@ -16,7 +16,7 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
-        #qrCode {
+        #qrCodeCanvas {
             width: 300px;
             height: 300px;
         }
@@ -25,7 +25,7 @@
 <body>
     <div>
         <h1>Generated QR Code</h1>
-        <div id="qrCode"></div>
+        <canvas id="qrCodeCanvas"></canvas>
     </div>
 
     <script>
@@ -36,12 +36,12 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             let pinData = getQueryParam('data');
-            console.log("Pin Data from URL: ", pinData); // Debugging line
+            console.log("Pin Data from URL: ", pinData); // Add this line for debugging
             if (pinData) {
                 try {
                     let decodedData = decodeURIComponent(pinData);
-                    console.log("Decoded Pin Data: ", decodedData); // Debugging line
-                    QRCode.toCanvas(document.getElementById('qrCode'), decodedData, { errorCorrectionLevel: 'H' }, function(error) {
+                    console.log("Decoded Pin Data: ", decodedData); // Add this line for debugging
+                    QRCode.toCanvas(document.getElementById('qrCodeCanvas'), decodedData, { errorCorrectionLevel: 'H' }, function(error) {
                         if (error) {
                             console.error("QR code generation error: ", error);
                         } else {
