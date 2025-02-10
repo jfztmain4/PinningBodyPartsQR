@@ -74,6 +74,7 @@
             if (units) {
                 pins.push({ x: x, y: y, units: units });
                 drawPins();
+                console.log(`Pin added at (${x}, ${y}) with ${units} units.`); // Debugging line
             }
         }
 
@@ -81,6 +82,7 @@
             let rect = canvas.getBoundingClientRect();
             let x = (event.clientX - rect.left) / scale - originX;
             let y = (event.clientY - rect.top) / scale - originY;
+            console.log(`Canvas clicked at (${x}, ${y}).`); // Debugging line
             promptForUnits(x, y);
         });
 
