@@ -1,0 +1,6 @@
+document.getElementById('generateQR').addEventListener('click', function() {
+    console.log("Generate QR button clicked.");
+    let pinData = encodeURIComponent(JSON.stringify(pins));
+    console.log("Pin Data: ", pinData);
+    window.location.href = `qrpage.html?data=${pinData}`;
+});
