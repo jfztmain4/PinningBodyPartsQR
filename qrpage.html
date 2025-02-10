@@ -40,20 +40,10 @@
             if (pinData) {
                 try {
                     let decodedData = decodeURIComponent(pinData);
-                    console.log("Decoded Pin Data: ", decodedData); // Add this line for debugging
-                    
-                    // Verify JSON data
-                    let jsonData;
-                    try {
-                        jsonData = JSON.parse(decodedData);
-                        console.log("Verified JSON Data: ", jsonData); // Add this line for debugging
-                    } catch (e) {
-                        console.error("Error parsing JSON data: ", e);
-                        return;
-                    }
-
-                    // Generate QR code
-                    QRCode.toCanvas(document.getElementById('qrCode'), JSON.stringify(jsonData), function(error) {
+                    let jsonData = JSON.parse(decodedData);
+                    let dataString = JSON.stringify(jsonData);
+                    console.log("Decoded Pin Data: ", dataString); // Add this line for debugging
+                    QRCode.toCanvas(document.getElementById('qrCode'), dataString, function(error) {
                         if (error) {
                             console.error("QR code generation error: ", error);
                         } else {
