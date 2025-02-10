@@ -7,11 +7,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
     <style>
-        #imageCanvas {
-            border: 1px solid #000000;
-            cursor: crosshair;
-            width: 1136px;
-            height: 763px;
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: auto;
         }
         .container {
             width: 1136px;
@@ -24,18 +23,22 @@
             top: 0;
             left: 0;
             transform-origin: top left;
+            width: 100%;
+            height: 100%;
         }
         #canvasOverlay {
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
     <h1>Vaccine Mapping</h1>
     <div class="container" id="container">
-        <img id="image" src="Complete_Human.png" alt="Human Image" style="width: 1136px; height: 763px;">
+        <img id="image" src="Complete_Human.png" alt="Human Image">
         <canvas id="canvasOverlay" width="1136" height="763"></canvas>
     </div>
     <br>
@@ -47,6 +50,7 @@
         let canvas = document.getElementById('canvasOverlay');
         let context = canvas.getContext('2d');
         let scale = 1;
+        let isZooming = false;
 
         function drawPins() {
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -103,7 +107,7 @@
         // Touch events for zoom
         container.addEventListener('touchstart', function(event) {
             if (event.touches.length == 2) {
-                // Zooming
+                isZooming = true;
                 const dist = Math.sqrt(
                     (event.touches[0].clientX - event.touches[1].clientX) ** 2 +
                     (event.touches[0].clientY - event.touches[1].clientY) ** 2
@@ -113,9 +117,8 @@
         });
 
         container.addEventListener('touchmove', function(event) {
-            event.preventDefault();
-            if (event.touches.length == 2) {
-                // Zooming
+            if (isZooming && event.touches.length == 2) {
+                event.preventDefault();
                 const initialDist = parseFloat(container.getAttribute('data-pinching'));
                 const currentDist = Math.sqrt(
                     (event.touches[0].clientX - event.touches[1].clientX) ** 2 +
@@ -131,9 +134,14 @@
         });
 
         container.addEventListener('touchend', function(event) {
-            container.removeAttribute('data-pinching');
+            if (event.touches.length < 2) {
+                isZooming = false;
+                container.removeAttribute('data-pinching');
+            }
         });
 
+        // Enable page scrolling
+        document.body.style.touchAction = 'pan-x pan-y';
     </script>
 </body>
 </html>
