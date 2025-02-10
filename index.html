@@ -17,7 +17,6 @@
             width: 1136px;
             height: 763px;
             position: relative;
-            overflow: hidden;
         }
         #image {
             width: 100%;
@@ -25,7 +24,6 @@
             position: absolute;
             top: 0;
             left: 0;
-            transform-origin: top left;
         }
         #canvasOverlay {
             position: absolute;
@@ -38,7 +36,7 @@
 </head>
 <body>
     <h1>Vaccine Mapping</h1>
-    <div class="container" id="container">
+    <div class="container">
         <img id="image" src="Complete_Human.png" alt="Human Image">
         <canvas id="canvasOverlay" width="1136" height="763"></canvas>
     </div>
