@@ -48,7 +48,6 @@
         let container = document.getElementById('container');
         let canvas = document.getElementById('canvasOverlay');
         let context = canvas.getContext('2d');
-        let image = document.getElementById('image');
         let scale = 1;
         let originX = 0;
         let originY = 0;
@@ -80,8 +79,8 @@
 
         canvas.addEventListener('click', function(event) {
             let rect = canvas.getBoundingClientRect();
-            let x = (event.clientX - rect.left);
-            let y = (event.clientY - rect.top);
+            let x = (event.clientX - rect.left) / scale - originX;
+            let y = (event.clientY - rect.top) / scale - originY;
             console.log(`Canvas clicked at (${x}, ${y}).`); // Debugging line
             promptForUnits(x, y);
         });
