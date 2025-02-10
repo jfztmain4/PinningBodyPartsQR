@@ -46,10 +46,11 @@
         let container = document.getElementById('container');
         let canvas = document.getElementById('canvasOverlay');
         let context = canvas.getContext('2d');
-        let image = document.getElementById('image');
         let scale = 1;
         let originX = 0;
         let originY = 0;
+        let isPanning = false;
+        let startX, startY;
 
         function drawPins() {
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -122,8 +123,9 @@
             } else {
                 // Panning
                 const touch = event.touches[0];
-                container.setAttribute('data-touchX', touch.clientX);
-                container.setAttribute('data-touchY', touch.clientY);
+                startX = touch.clientX - originX;
+                startY = touch.clientY - originY;
+                isPanning = true;
             }
         });
 
@@ -140,27 +142,21 @@
                 scale *= zoom;
                 if (scale < 1) scale = 1; // Prevent zooming out too much
                 if (scale > 3) scale = 3; // Prevent zooming in too much
-                container.style.transform = `scale(${scale})`;
-                drawPins();
                 container.setAttribute('data-pinching', currentDist);
-            } else {
-                // Panning
+                applyTransform();
+            } else if (isPanning) {
                 const touch = event.touches[0];
-                const prevX = parseFloat(container.getAttribute('data-touchX'));
-                const prevY = parseFloat(container.getAttribute('data-touchY'));
-                originX += (touch.clientX - prevX) / scale;
-                originY += (touch.clientY - prevY) / scale;
-                container.setAttribute('data-touchX', touch.clientX);
-                container.setAttribute('data-touchY', touch.clientY);
-                container.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
-                drawPins();
+                originX = touch.clientX - startX;
+                originY = touch.clientY - startY;
+                applyTransform();
             }
         });
 
         container.addEventListener('touchend', function(event) {
-            container.removeAttribute('data-pinching');
-            container.removeAttribute('data-touchX');
-            container.removeAttribute('data-touchY');
+            if (event.touches.length < 2) {
+                isPanning = false;
+                container.removeAttribute('data-pinching');
+            }
         });
 
     </script>
