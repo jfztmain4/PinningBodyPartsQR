@@ -143,4 +143,20 @@
                 const touch = event.touches[0];
                 const prevX = parseFloat(container.getAttribute('data-touchX'));
                 const prevY = parseFloat(container.getAttribute('data-touchY'));
-                originX += (touch.clientX - prevX
+                originX += (touch.clientX - prevX) / scale;
+                originY += (touch.clientY - prevY) / scale;
+                container.setAttribute('data-touchX', touch.clientX);
+                container.setAttribute('data-touchY', touch.clientY);
+                container.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+                drawPins();
+            }
+        });
+
+        container.addEventListener('touchend', function(event) {
+            container.removeAttribute('data-pinching');
+            container.removeAttribute('data-touchX');
+            container.removeAttribute('data-touchY');
+        });
+    </script>
+</body>
+</html>
