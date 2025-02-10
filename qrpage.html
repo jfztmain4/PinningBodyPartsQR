@@ -36,14 +36,12 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             let pinData = getQueryParam('data');
-            console.log("Pin Data from URL: ", pinData); // Add this line for debugging
+            console.log("Pin Data from URL: ", pinData); // Debugging line
             if (pinData) {
                 try {
                     let decodedData = decodeURIComponent(pinData);
-                    let jsonData = JSON.parse(decodedData);
-                    let dataString = JSON.stringify(jsonData);
-                    console.log("Decoded Pin Data: ", dataString); // Add this line for debugging
-                    QRCode.toCanvas(document.getElementById('qrCode'), dataString, function(error) {
+                    console.log("Decoded Pin Data: ", decodedData); // Debugging line
+                    QRCode.toCanvas(document.getElementById('qrCode'), decodedData, { errorCorrectionLevel: 'H' }, function(error) {
                         if (error) {
                             console.error("QR code generation error: ", error);
                         } else {
@@ -58,4 +56,5 @@
             }
         });
     </script>
-</body
+</body>
+</html>
