@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vaccine Mapping</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <style>
+        #imageCanvas {
+            border: 1px solid #000000;
+            background-image: url('human_body.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+    </style>
 </head>
 <body>
     <h1>Vaccine Mapping</h1>
-    <canvas id="imageCanvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+    <canvas id="imageCanvas" width="500" height="500"></canvas>
     <br>
     <label for="partName">Part Name:</label>
     <input type="text" id="partName">
