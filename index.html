@@ -11,6 +11,7 @@
             height: 100%;
             margin: 0;
             overflow: auto;
+            touch-action: pan-x pan-y;
         }
         .container {
             width: 1136px;
@@ -43,6 +44,7 @@
     </div>
     <br>
     <button id="generateQR">Generate QR Code</button>
+    <button id="undoPin">Undo Last Pin</button>
 
     <script>
         let pins = [];
@@ -50,7 +52,6 @@
         let canvas = document.getElementById('canvasOverlay');
         let context = canvas.getContext('2d');
         let scale = 1;
-        let isZooming = false;
 
         function drawPins() {
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -93,50 +94,11 @@
             window.location.href = `qrpage.html?data=${pinData}`;
         });
 
-        // Zoom functionality
-        container.addEventListener('wheel', function(event) {
-            event.preventDefault();
-            let wheel = event.deltaY < 0 ? 1 : -1;
-            let zoom = Math.exp(wheel * 0.1);
-            scale *= zoom;
-            if (scale < 1) scale = 1; // Prevent zooming out too much
-            if (scale > 3) scale = 3; // Prevent zooming in too much
-            drawPins();
-        });
-
-        // Touch events for zoom
-        container.addEventListener('touchstart', function(event) {
-            if (event.touches.length == 2) {
-                isZooming = true;
-                const dist = Math.sqrt(
-                    (event.touches[0].clientX - event.touches[1].clientX) ** 2 +
-                    (event.touches[0].clientY - event.touches[1].clientY) ** 2
-                );
-                container.setAttribute('data-pinching', dist);
-            }
-        });
-
-        container.addEventListener('touchmove', function(event) {
-            if (isZooming && event.touches.length == 2) {
-                event.preventDefault();
-                const initialDist = parseFloat(container.getAttribute('data-pinching'));
-                const currentDist = Math.sqrt(
-                    (event.touches[0].clientX - event.touches[1].clientX) ** 2 +
-                    (event.touches[0].clientY - event.touches[1].clientY) ** 2
-                );
-                const zoom = currentDist / initialDist;
-                scale *= zoom;
-                if (scale < 1) scale = 1; // Prevent zooming out too much
-                if (scale > 3) scale = 3; // Prevent zooming in too much
-                container.setAttribute('data-pinching', currentDist);
+        document.getElementById('undoPin').addEventListener('click', function() {
+            if (pins.length > 0) {
+                pins.pop();
                 drawPins();
-            }
-        });
-
-        container.addEventListener('touchend', function(event) {
-            if (event.touches.length < 2) {
-                isZooming = false;
-                container.removeAttribute('data-pinching');
+                console.log("Last pin undone."); // Debugging line
             }
         });
 
