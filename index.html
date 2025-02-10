@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaccine Mapping</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+</head>
+<body>
+    <h1>Vaccine Mapping</h1>
+    <canvas id="imageCanvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+    <br>
+    <label for="partName">Part Name:</label>
+    <input type="text" id="partName">
+    <br>
+    <label for="vaccineUnits">Vaccine Units (ml):</label>
+    <input type="number" id="vaccineUnits">
+    <br>
+    <button id="addPin">Add Pin</button>
+    <button id="generateQR">Generate QR Code</button>
+    <br>
+    <div id="qrCode"></div>
+
+    <script>
+        let pins = [];
+        let canvas = document.getElementById('imageCanvas');
+        let context = canvas.getContext('2d');
+        
+        function drawPins() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            pins.forEach(pin => {
+                context.fillStyle = 'red';
+                context.beginPath();
+                context.arc(pin.x, pin.y, 5, 0, 2 * Math.PI);
+                context.fill();
+                context.fillStyle = 'black';
+                context.fillText(pin.units + " ml", pin.x + 10, pin.y - 5);
+            });
+        }
+        
+        canvas.addEventListener('click', function(event) {
+            let rect = canvas.getBoundingClientRect();
+            let x = event.clientX - rect.left;
+            let y = event.clientY - rect.top;
+            let partName = document.getElementById('partName').value;
+            let vaccineUnits = document.getElementById('vaccineUnits').value;
+            if (partName && vaccineUnits) {
+                pins.push({ x: x, y: y, units: vaccineUnits });
+                drawPins();
+            } else {
+                alert('Please enter Part Name and Vaccine Units.');
+            }
+        });
+
+        document.getElementById('generateQR').addEventListener('click', function() {
+            let pinData = JSON.stringify(pins);
+            QRCode.toCanvas(document.getElementById('qrCode'), pinData, function(error) {
+                if (error) console.error(error);
+                console.log('QR code generated!');
+            });
+        });
+
+        document.getElementById('addPin').addEventListener('click', function() {
+            canvas.dispatchEvent(new MouseEvent('click'));
+        });
+    </script>
+</body>
+</html>
