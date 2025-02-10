@@ -9,7 +9,7 @@
     <style>
         #imageCanvas {
             border: 1px solid #000000;
-            background-image: url('Complete_Human.png');
+            background-image: url('Complete_Human.png'); /* Ensure the image is in your GitHub repository */
             background-size: contain;
             background-repeat: no-repeat;
             cursor: crosshair;
@@ -22,13 +22,6 @@
     <h1>Vaccine Mapping</h1>
     <canvas id="imageCanvas" width="1136" height="763"></canvas>
     <br>
-    <label for="partName">Part Name:</label>
-    <input type="text" id="partName">
-    <br>
-    <label for="vaccineUnits">Vaccine Units (ml):</label>
-    <input type="number" id="vaccineUnits">
-    <br>
-    <button id="addPin">Add Pin</button>
     <button id="generateQR">Generate QR Code</button>
     <br>
     <div id="qrCode"></div>
@@ -57,18 +50,19 @@
             context.restore();
         }
 
+        function promptForUnits(x, y) {
+            let units = prompt("Enter the vaccine units (ml):");
+            if (units) {
+                pins.push({ x: x, y: y, units: units });
+                drawPins();
+            }
+        }
+
         canvas.addEventListener('click', function(event) {
             let rect = canvas.getBoundingClientRect();
             let x = (event.clientX - rect.left) / scale - originX;
             let y = (event.clientY - rect.top) / scale - originY;
-            let partName = document.getElementById('partName').value;
-            let vaccineUnits = document.getElementById('vaccineUnits').value;
-            if (partName && vaccineUnits) {
-                pins.push({ x: x, y: y, units: vaccineUnits });
-                drawPins();
-            } else {
-                alert('Please enter Part Name and Vaccine Units.');
-            }
+            promptForUnits(x, y);
         });
 
         document.getElementById('generateQR').addEventListener('click', function() {
@@ -77,10 +71,6 @@
                 if (error) console.error(error);
                 console.log('QR code generated!');
             });
-        });
-
-        document.getElementById('addPin').addEventListener('click', function() {
-            canvas.dispatchEvent(new MouseEvent('click'));
         });
 
         // Zoom functionality
