@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+</head>
+<body>
+    <h1>Generated QR Code</h1>
+    <div id="qrCode"></div>
+
+    <script>
+        function getQueryParam(param) {
+            let params = new URLSearchParams(window.location.search);
+            return params.get(param);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let pinData = getQueryParam('data');
+            if (pinData) {
+                QRCode.toCanvas(document.getElementById('qrCode'), decodeURIComponent(pinData), function(error) {
+                    if (error) console.error(error);
+                    console.log('QR code generated!');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
