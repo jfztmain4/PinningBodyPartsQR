@@ -17,27 +17,25 @@
             width: 1136px;
             height: 763px;
             position: relative;
+            overflow: hidden;
         }
         #image {
-            width: 100%;
-            height: 100%;
             position: absolute;
             top: 0;
             left: 0;
+            transform-origin: top left;
         }
         #canvasOverlay {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
         }
     </style>
 </head>
 <body>
     <h1>Vaccine Mapping</h1>
     <div class="container" id="container">
-        <img id="image" src="Complete_Human.png" alt="Human Image">
+        <img id="image" src="Complete_Human.png" alt="Human Image" style="width: 1136px; height: 763px;">
         <canvas id="canvasOverlay" width="1136" height="763"></canvas>
     </div>
     <br>
@@ -48,6 +46,7 @@
         let container = document.getElementById('container');
         let canvas = document.getElementById('canvasOverlay');
         let context = canvas.getContext('2d');
+        let image = document.getElementById('image');
         let scale = 1;
         let originX = 0;
         let originY = 0;
@@ -60,10 +59,10 @@
             pins.forEach(pin => {
                 context.fillStyle = 'red';
                 context.beginPath();
-                context.arc(pin.x, pin.y, 5, 0, 2 * Math.PI);
+                context.arc(pin.x, pin.y, 5 / scale, 0, 2 * Math.PI);
                 context.fill();
                 context.fillStyle = 'black';
-                context.fillText(pin.units + " Units", pin.x + 10, pin.y - 5);
+                context.fillText(pin.units + " Units", pin.x + 10 / scale, pin.y - 5 / scale);
             });
             context.restore();
         }
@@ -94,6 +93,12 @@
             window.location.href = `qrpage.html?data=${pinData}`;
         });
 
+        function applyTransform() {
+            let transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+            container.style.transform = transform;
+            drawPins();
+        }
+
         // Zoom functionality
         container.addEventListener('wheel', function(event) {
             event.preventDefault();
@@ -102,8 +107,7 @@
             scale *= zoom;
             if (scale < 1) scale = 1; // Prevent zooming out too much
             if (scale > 3) scale = 3; // Prevent zooming in too much
-            container.style.transform = `scale(${scale})`;
-            drawPins();
+            applyTransform();
         });
 
         // Touch events for zoom and pan
@@ -158,6 +162,7 @@
             container.removeAttribute('data-touchX');
             container.removeAttribute('data-touchY');
         });
+
     </script>
 </body>
 </html>
