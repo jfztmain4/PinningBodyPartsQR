@@ -35,16 +35,12 @@
             height: 100%;
         }
         .floating-buttons {
-            display: none;
-        }
-        @media (max-width: 768px) {
-            .floating-buttons {
-                display: flex;
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                gap: 10px;
-            }
+            display: flex;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            gap: 10px;
+            z-index: 1000;
         }
     </style>
 </head>
@@ -56,10 +52,6 @@
     </div>
     <br>
     <div class="floating-buttons">
-        <button id="generateQR">Generate QR Code</button>
-        <button id="undoPin">Undo Last Pin</button>
-    </div>
-    <div class="desktop-buttons">
         <button id="generateQR">Generate QR Code</button>
         <button id="undoPin">Undo Last Pin</button>
     </div>
