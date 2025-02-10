@@ -42,8 +42,6 @@
     </div>
     <br>
     <button id="generateQR">Generate QR Code</button>
-    <br>
-    <div id="qrCode"></div>
 
     <script>
         let pins = [];
@@ -85,11 +83,8 @@
         });
 
         document.getElementById('generateQR').addEventListener('click', function() {
-            let pinData = JSON.stringify(pins);
-            QRCode.toCanvas(document.getElementById('qrCode'), pinData, function(error) {
-                if (error) console.error(error);
-                console.log('QR code generated!');
-            });
+            let pinData = encodeURIComponent(JSON.stringify(pins));
+            window.location.href = `qrpage.html?data=${pinData}`;
         });
 
         // Zoom functionality
