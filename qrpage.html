@@ -24,6 +24,8 @@
                     if (error) console.error(error);
                     console.log('QR code generated!');
                 });
+            } else {
+                console.error("No pin data found in URL parameters.");
             }
         });
     </script>
